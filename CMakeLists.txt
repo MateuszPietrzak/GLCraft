@@ -15,7 +15,7 @@ include_directories(${GLFW_INCLUDE_DIRS})
 
 
 set(SOURCE_FILES src/cpp/main.cpp)
-add_executable(GLCraft include/stb_image.h src/cpp/main.cpp src/cpp/glad.c src/cpp/Shader.cpp include/Shader.h src/cpp/Game.cpp include/Game.h src/cpp/Camera.cpp include/Camera.h src/cpp/Chunk.cpp include/Chunk.h src/cpp/TextRenderer.cpp include/TextRenderer.h src/cpp/TextureManager.cpp include/TextureManager.h src/cpp/Raycast.cpp include/Raycast.h)
+add_executable(GLCraft include/stb_image.h src/cpp/main.cpp src/cpp/glad.c src/cpp/Shader.cpp include/Shader.h src/cpp/Game.cpp include/Game.h src/cpp/Camera.cpp include/Camera.h src/cpp/Chunk.cpp include/Chunk.h src/cpp/TextRenderer.cpp include/TextRenderer.h src/cpp/TextureManager.cpp include/TextureManager.h src/cpp/Raycast.cpp include/Raycast.h src/cpp/Crosshair.cpp include/Crosshair.h)
 target_link_libraries (GLCraft
         ${OPENGL_LIBRARIES}
         ${GLFW3_LIBRARY} glfw

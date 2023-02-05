@@ -10,10 +10,11 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <vector>
+#include "TextureManager.h"
 
 class Raycast {
 public:
-    static bool raycast(glm::vec3& position, glm::vec3& direction, glm::ivec3& result, std::vector<std::vector<std::vector<int>>>& chunk_block_data);
+    static bool raycast(glm::vec3& position, glm::vec3& direction, glm::ivec3& result, Side& cast_side, std::vector<std::vector<std::vector<int>>>& chunk_block_data);
 };
 
 

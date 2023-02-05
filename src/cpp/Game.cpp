@@ -27,6 +27,8 @@ void Game::init() {
         return;
     }
 
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_MULTISAMPLE);
 
@@ -44,6 +46,9 @@ void Game::init() {
     texture_manager = TextureManager();
     texture_manager.init();
 
+    crosshair = Crosshair();
+    crosshair.init(width, height);
+
     chunk = Chunk();
     chunk.init();
     chunk.generate(texture_manager);
@@ -53,7 +58,7 @@ void Game::mainLoop() {
     while(!glfwWindowShouldClose(window)) {
         processInput();
 
-        glClearColor(0.20f, 0.19f, 0.18f, 1.0f);
+        glClearColor(0.38f, 0.62f, 0.89f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         shader.use();
@@ -74,11 +79,34 @@ void Game::mainLoop() {
         text_renderer.render("Cam pos: " + std::to_string(camera.getPos().x) + ", " + std::to_string(camera.getPos().y) + ", " + std::to_string(camera.getPos().z), 10, 760, 0.3, glm::vec3(1.0f, 1.0f, 1.0f));
         text_renderer.render("Cam yaw / pitch: " + std::to_string(camera.getYawPitch().x) + ", " + std::to_string(camera.getYawPitch().y), 10, 740, 0.3, glm::vec3(1.0f, 1.0f, 1.0f));
 
-        glm::ivec3 res;
-        if(Raycast::raycast(camera.getPos(), camera.getDirection(), res, chunk.getBlockData())) {
-            chunk.selectBlock(res);
+        crosshair.render();
+
+        Side cast_side;
+        if(Raycast::raycast(camera.getPos(), camera.getDirection(), block_to_break, cast_side, chunk.getBlockData())) {
+            chunk.selectBlock(block_to_break);
         }
-        std::cout << res.x << " " << res.y << " " << res.z << "\n";
+        block_to_place = block_to_break;
+        switch(cast_side) {
+            case TOP:
+                block_to_place.y++;
+                break;
+            case BOTTOM:
+                block_to_place.y--;
+                break;
+            case NORTH:
+                block_to_place.x++;
+                break;
+            case SOUTH:
+                block_to_place.x--;
+                break;
+            case EAST:
+                block_to_place.z++;
+                break;
+            case WEST:
+                block_to_place.z--;
+                break;
+        }
+
 
         chunk.generate(texture_manager);
 
@@ -101,7 +129,6 @@ void Game::framebufferCallback(GLFWwindow *_window, int _width, int _height) {
     text_renderer.updateWindowSize(width, height);
 }
 
-
 void Game::processInput() {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
@@ -110,4 +137,11 @@ void Game::processInput() {
 
 void Game::mouseCallback(GLFWwindow* _window, double x_pos, double y_pos) {
     camera.processMouse(x_pos, y_pos, delta_time);
+}
+
+void Game::mouseButtonCallback(GLFWwindow *_window, int button, int action, int mods) {
+    if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+        chunk.getBlockData()[block_to_break.x][block_to_break.y][block_to_break.z] = 0;
+    if(button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+        chunk.getBlockData()[block_to_place.x][block_to_place.y][block_to_place.z] = 1;
 }

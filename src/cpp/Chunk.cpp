@@ -36,11 +36,6 @@ void Chunk::init() {
             }
         }
     }
-    block_data[8][6][8] = 0;
-    block_data[8][5][8] = 0;
-    block_data[7][6][8] = 0;
-    block_data[8][6][7] = 0;
-    block_data[7][6][7] = 0;
 }
 
 void Chunk::generate(TextureManager& texture_manager) {
@@ -62,6 +57,7 @@ void Chunk::generate(TextureManager& texture_manager) {
                         vertices.push_back(cube_verts_north[5 * i + 3] == 1.0f ? x2 : x1);
                         vertices.push_back(cube_verts_north[5 * i + 4] == 1.0f ? y2 : y1);
                         vertices.push_back((float)selected_data[x][y][z]);
+                        vertices.push_back(1.0f);
                     }
                 }
                 if(x == 0 || block_data[x-1][y][z] == 0) {
@@ -73,6 +69,7 @@ void Chunk::generate(TextureManager& texture_manager) {
                         vertices.push_back(cube_verts_south[5 * i + 3] == 1.0f ? x2 : x1);
                         vertices.push_back(cube_verts_south[5 * i + 4] == 1.0f ? y2 : y1);
                         vertices.push_back((float)selected_data[x][y][z]);
+                        vertices.push_back(1.0f);
                     }
                 }
                 if(y == 15 || block_data[x][y+1][z] == 0) {
@@ -84,6 +81,7 @@ void Chunk::generate(TextureManager& texture_manager) {
                         vertices.push_back(cube_verts_top[5 * i + 3] == 1.0f ? x2 : x1);
                         vertices.push_back(cube_verts_top[5 * i + 4] == 1.0f ? y2 : y1);
                         vertices.push_back((float)selected_data[x][y][z]);
+                        vertices.push_back(1.0f);
                     }
                 }
                 if(y == 0 || block_data[x][y-1][z] == 0) {
@@ -95,6 +93,7 @@ void Chunk::generate(TextureManager& texture_manager) {
                         vertices.push_back(cube_verts_bottom[5 * i + 3] == 1.0f ? x2 : x1);
                         vertices.push_back(cube_verts_bottom[5 * i + 4] == 1.0f ? y2 : y1);
                         vertices.push_back((float)selected_data[x][y][z]);
+                        vertices.push_back(1.0f);
                     }
                 }
                 if(z == 15 || block_data[x][y][z+1] == 0) {
@@ -106,6 +105,7 @@ void Chunk::generate(TextureManager& texture_manager) {
                         vertices.push_back(cube_verts_east[5 * i + 3] == 1.0f ? x2 : x1);
                         vertices.push_back(cube_verts_east[5 * i + 4] == 1.0f ? y2 : y1);
                         vertices.push_back((float)selected_data[x][y][z]);
+                        vertices.push_back(1.0f);
                     }
                 }
                 if(z == 0 || block_data[x][y][z-1] == 0) {
@@ -117,6 +117,7 @@ void Chunk::generate(TextureManager& texture_manager) {
                         vertices.push_back(cube_verts_west[5 * i + 3] == 1.0f ? x2 : x1);
                         vertices.push_back(cube_verts_west[5 * i + 4] == 1.0f ? y2 : y1);
                         vertices.push_back((float)selected_data[x][y][z]);
+                        vertices.push_back(1.0f);
                     }
                 }
             }
@@ -128,14 +129,17 @@ void Chunk::generate(TextureManager& texture_manager) {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_DYNAMIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3*sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)(3*sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(5*sizeof(float)));
+    glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)(5*sizeof(float)));
     glEnableVertexAttribArray(2);
+
+    glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)(6*sizeof(float)));
+    glEnableVertexAttribArray(3);
 
     glBindVertexArray(0);
 
